@@ -7,7 +7,9 @@ use App\Models\Review;
 
 class ProfilePageController extends Controller
 {
-    // Display user profile page
+    /**
+     * Display user profile page.
+     */
     public function show($id)
     {
         $profile = UserProfile::where('user_id', $id)->first();
@@ -15,7 +17,9 @@ class ProfilePageController extends Controller
         return view('profiles.show', compact('profile', 'id'));
     }
 
-    // Display photographer profile page
+    /**
+     * Display photographer profile page.
+     */
     public function photographer($id)
     {
         $profile = UserProfile::where('user_id', $id)->first();
