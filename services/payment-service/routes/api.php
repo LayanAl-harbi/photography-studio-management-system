@@ -1,15 +1,13 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-// Payments & Dashboard Endpoints
+// Payments Endpoints
 Route::get('/payments', [PaymentController::class, 'index']);
 Route::post('/payments', [PaymentController::class, 'store']);
-Route::get('/dashboard/stats', [PaymentController::class, 'getStats']);
-Route::get('/dashboard/summary', [PaymentController::class, 'getSummary']);
+
+// Dashboard Endpoints
+Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
+Route::get('/dashboard/summary', [DashboardController::class, 'summary']);

@@ -11,3 +11,6 @@ Route::get('/', function () {
 Route::get('/payment', function () {
     return view('payment');
 });
+
+
+Route::view('/dashboard', 'dashboard');
