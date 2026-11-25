@@ -16,7 +16,7 @@ They should **not connect directly to `auth_db`**.
   ---------------- ----------------------------------------
   Framework        Laravel 13.42.0
   Authentication   Laravel Sanctum personal access tokens
-  Local base URL   `http://127.0.0.1:8000`
+  Local base URL   `http://127.0.0.1:8002`
   Database         `auth_db`
 
 > **Important:** `127.0.0.1` is only accessible from the same computer.
@@ -233,7 +233,7 @@ Configure `AUTH_SERVICE_URL` for each environment. Do not hardcode
 ### Example environment configuration
 
 ``` env
-AUTH_SERVICE_URL=http://127.0.0.1:8000
+AUTH_SERVICE_URL=http://127.0.0.1:8002
 ```
 
 Each teammate should use the actual reachable URL for their environment.

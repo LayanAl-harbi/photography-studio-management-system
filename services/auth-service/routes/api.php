@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\Auth\LogoutController;
+use App\Http\Controllers\API\Admin\PhotographerController;
+use App\Http\Controllers\API\Admin\UserController;
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
@@ -17,3 +20,24 @@ Route::get('/user', function (Request $request) {
         'is_active' => $request->user()->is_active,
     ]);
 })->middleware('auth:sanctum');
+
+Route::post('/logout', [LogoutController::class, 'logout'])
+    ->middleware('auth:sanctum');
+
+Route::post('/admin/photographers', [PhotographerController::class, 'store'])
+    ->middleware(['auth:sanctum', 'role:admin']);
+
+Route::get('/admin/photographers', [PhotographerController::class, 'index'])
+    ->middleware(['auth:sanctum', 'role:admin']);
+
+Route::patch('/admin/photographers/{id}/status', [PhotographerController::class, 'updateStatus'])
+    ->middleware(['auth:sanctum', 'role:admin']);
+
+Route::patch('/admin/users/{id}/role', [UserController::class, 'updateRole'])
+    ->middleware(['auth:sanctum', 'role:admin']);
+
+Route::get('/admin/users', [UserController::class, 'index'])
+    ->middleware(['auth:sanctum', 'role:admin']);
+
+Route::patch('/admin/users/{id}/status', [UserController::class, 'updateStatus'])
+    ->middleware(['auth:sanctum', 'role:admin']);

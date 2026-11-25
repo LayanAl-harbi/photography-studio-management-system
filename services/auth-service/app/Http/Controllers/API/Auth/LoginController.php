@@ -12,6 +12,8 @@ class LoginController extends Controller
 {
     public function login(Request $request): JsonResponse
     {
+
+
         // Validate the login information
         $validated = $request->validate([
             'email' => ['required', 'email'],

@@ -1,53 +1,90 @@
 
 @extends('layouts.app')
 
-@section('title', 'Login')
+@section('title', 'Login | Atelier Frame')
 
 @section('content')
 
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
+<div class="row justify-content-center align-items-center py-4">
+    <div class="col-md-8 col-lg-6">
 
-        <div class="card shadow border-0">
-            <div class="card-body p-4">
+        <div class="text-center mb-4">
+            <div class="eyebrow mb-3">WELCOME BACK TO THE STUDIO</div>
 
-                <h2 class="text-center mb-4">Welcome Back</h2>
+            <h1 style="font-size: clamp(38px, 5vw, 58px);">
+                Your story continues <em style="color:#9d7b69;">here.</em>
+            </h1>
 
-                <div id="responseMessage"></div>
-
-                <form id="loginForm">
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control"
-                               id="email" name="email" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control"
-                               id="password" name="password" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-dark w-100">
-                        Login
-                    </button>
-
-                </form>
-
-                <p class="text-center mt-3 mb-0">
-                    Don't have an account?
-                    <a href="{{ route('register') }}">Register</a>
-                </p>
-
-            </div>
+            <p class="text-secondary mt-3">
+                Sign in to your account and step back into Atelier Frame.
+            </p>
         </div>
+
+        <div class="studio-card p-4 p-md-5">
+
+            <div class="text-center mb-4">
+                <span class="serif" style="font-size:26px;">Sign in</span>
+                <p class="text-muted small mt-2 mb-0">
+                    Enter your account details below.
+                </p>
+            </div>
+
+            <div id="responseMessage"></div>
+
+            <form id="loginForm">
+
+                <div class="mb-4">
+                    <label for="email" class="form-label fw-semibold">
+                        Email address
+                    </label>
+
+                    <input type="email"
+                           class="form-control"
+                           id="email"
+                           name="email"
+                           placeholder="you@example.com"
+                           autocomplete="email"
+                           required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-semibold">
+                        Password
+                    </label>
+
+                    <input type="password"
+                           class="form-control"
+                           id="password"
+                           name="password"
+                           placeholder="Enter your password"
+                           autocomplete="current-password"
+                           required>
+                </div>
+
+                <button type="submit" class="btn btn-brown w-100" id="loginButton">
+                    Sign in to your account →
+                </button>
+
+            </form>
+
+            <div class="text-center mt-4">
+                <span class="text-muted">New to Atelier Frame?</span>
+                <a href="{{ route('register') }}"
+                   style="color:var(--brown); font-weight:700; text-decoration:none;">
+                    Create an account
+                </a>
+            </div>
+
+        </div>
+
+        <p class="text-center mt-4 small" style="color:#e9d9c8;">
+            A little bit of magic in every frame. ♡
+        </p>
 
     </div>
 </div>
 
 @endsection
-
 
 @push('scripts')
 <script>
@@ -56,11 +93,17 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
     const form = event.target;
     const responseMessage = document.getElementById('responseMessage');
+    const loginButton = document.getElementById('loginButton');
 
     const formData = {
         email: form.email.value,
         password: form.password.value
     };
+
+    loginButton.disabled = true;
+    loginButton.textContent = 'Signing in...';
+
+    responseMessage.replaceChildren();
 
     try {
         const response = await fetch('/api/login', {
@@ -74,8 +117,6 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
         const data = await response.json();
 
-        responseMessage.replaceChildren();
-
         const alert = document.createElement('div');
         alert.className = response.ok
             ? 'alert alert-success'
@@ -85,18 +126,29 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         responseMessage.appendChild(alert);
 
         if (response.ok) {
-            // Save the API token for authenticated requests.
             sessionStorage.setItem('auth_token', data.token);
-
-            // Save basic user information.
             sessionStorage.setItem('user', JSON.stringify(data.user));
 
+            const role = data.user?.role;
+            const destination = role === 'admin'
+                ? '/admin'
+                : role === 'photographer' && @json(Route::has('photographer.dashboard'))
+                    ? '/photographer'
+                    : '/';
+
             form.reset();
+            window.location.href = destination;
         }
 
     } catch (error) {
-        responseMessage.textContent = 'Unable to connect to the server.';
-        responseMessage.className = 'alert alert-danger';
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger';
+        alert.textContent = 'Unable to connect to the server.';
+        responseMessage.appendChild(alert);
+
+    } finally {
+        loginButton.disabled = false;
+        loginButton.textContent = 'Sign in to your account →';
     }
 });
 </script>
