@@ -2,19 +2,38 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReviewPageController;
+use App\Http\Controllers\ProfilePageController;
 
-// Redirect home page to reviews
+// Home
 Route::get('/', function () {
     return redirect('/reviews');
 });
 
-// Display all reviews
+// Reviews page
 Route::get('/reviews', [
     ReviewPageController::class,
     'index'
-]);
+])->name('reviews.index');
 
-// Open the original Add Review form
+// Open the original review form
 Route::get('/reviews/create', function () {
     return redirect('/reviews#write-review');
-});
+})->name('reviews.create');
+
+// Client Profile
+Route::get('/client/profile', [
+    ProfilePageController::class,
+    'client'
+])->name('client.profile');
+
+// Photographer Profile
+Route::get('/photographer/profile', [
+    ProfilePageController::class,
+    'photographer'
+])->name('photographer.profile');
+
+// Edit Profile
+Route::get('/profile/edit', [
+    ProfilePageController::class,
+    'edit'
+])->name('profile.edit');
