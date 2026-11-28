@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'profiles_reviews' => [
+        'url' => env('PROFILES_REVIEWS_SERVICE_URL', 'http://127.0.0.1:8003'),
+    ],
+
 ];

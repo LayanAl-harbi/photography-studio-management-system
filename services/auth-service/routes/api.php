@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\LogoutController;
 use App\Http\Controllers\API\Admin\PhotographerController;
 use App\Http\Controllers\API\Admin\UserController;
+use App\Http\Controllers\API\Admin\ReviewsIntegrationController;
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
@@ -40,4 +41,7 @@ Route::get('/admin/users', [UserController::class, 'index'])
     ->middleware(['auth:sanctum', 'role:admin']);
 
 Route::patch('/admin/users/{id}/status', [UserController::class, 'updateStatus'])
+    ->middleware(['auth:sanctum', 'role:admin']);
+
+Route::get('/admin/reviews', [ReviewsIntegrationController::class, 'index'])
     ->middleware(['auth:sanctum', 'role:admin']);
