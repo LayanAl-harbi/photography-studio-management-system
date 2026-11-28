@@ -88,6 +88,8 @@
 
 @push('scripts')
 <script>
+const PROFILES_REVIEWS_URL = @json(rtrim(config('services.profiles_reviews.url'), '/'));
+
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -130,20 +132,48 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             sessionStorage.setItem('user', JSON.stringify(data.user));
 
             const role = data.user?.role;
-            const destination = role === 'admin'
-                ? '/admin'
-                : role === 'photographer' && @json(Route::has('photographer.dashboard'))
-                    ? '/photographer'
-                    : '/';
-
             form.reset();
-            window.location.href = destination;
+
+            if (role === 'admin') {
+                window.location.href = '/admin';
+                return;
+            }
+
+            if (role === 'client' || role === 'photographer') {
+                const handoffResponse = await fetch('/api/profile-handoff', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${data.token}`
+                    }
+                });
+                const handoffData = await handoffResponse.json();
+
+                if (!handoffResponse.ok || !handoffData.code) {
+                    throw new Error(handoffData.message || 'Unable to continue to your profile.');
+                }
+
+                const handoffForm = document.createElement('form');
+                handoffForm.method = 'POST';
+                handoffForm.action = `${PROFILES_REVIEWS_URL}/auth/handoff`;
+
+                const codeInput = document.createElement('input');
+                codeInput.type = 'hidden';
+                codeInput.name = 'code';
+                codeInput.value = handoffData.code;
+                handoffForm.appendChild(codeInput);
+                document.body.appendChild(handoffForm);
+                handoffForm.submit();
+                return;
+            }
+
+            window.location.href = '/';
         }
 
     } catch (error) {
         const alert = document.createElement('div');
         alert.className = 'alert alert-danger';
-        alert.textContent = 'Unable to connect to the server.';
+        alert.textContent = error.message || 'Unable to connect to the server.';
         responseMessage.appendChild(alert);
 
     } finally {

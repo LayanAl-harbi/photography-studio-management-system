@@ -5,12 +5,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\LogoutController;
+use App\Http\Controllers\API\Auth\ProfileHandoffController;
 use App\Http\Controllers\API\Admin\PhotographerController;
 use App\Http\Controllers\API\Admin\UserController;
 use App\Http\Controllers\API\Admin\ReviewsIntegrationController;
 
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
+
+Route::post('/profile-handoff', [ProfileHandoffController::class, 'issue'])
+    ->middleware(['auth:sanctum', 'role:client,photographer']);
+Route::post('/profile-handoff/redeem', [ProfileHandoffController::class, 'redeem']);
 
 Route::get('/user', function (Request $request) {
     return response()->json([
