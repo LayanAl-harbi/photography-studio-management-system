@@ -37,3 +37,9 @@ Route::get('/profile/edit', [
     ProfilePageController::class,
     'edit'
 ])->name('profile.edit');
+
+// Receive a short-lived handoff code from Auth Service
+Route::post('/auth/handoff', [
+    \App\Http\Controllers\AuthHandoffController::class,
+    'receive'
+])->name('auth.handoff');
